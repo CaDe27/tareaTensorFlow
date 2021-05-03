@@ -237,6 +237,9 @@ for n in [10]:
 	y_train_encoded = to_categorical(y_train, num_classes = num_categorias)
 	y_test_encoded = to_categorical(y_test, num_classes = num_categorias)
 	
+	filee = open('yteees.txt', 'w')
+	filee.write(str(y_train_encoded))
+	filee.close()
 	#======= normalizar datos
 	x_mean = np.mean(x_train)
 	x_std = np.std(x_train)
@@ -252,8 +255,8 @@ for n in [10]:
 
 	#evaluarlo
 	loss, accuracy = model.evaluate(x_test_norm, y_test_encoded)
-	pred  = model.predict(x_test_norm)
-	preds = [np.argmax(x) for x in pred]
+	pred  = model.predict[x_test_norm]
+	preds = np.argmax(pred)
 	print(preds)
 	for i in len(preds):
 		if preds[i] != 0:

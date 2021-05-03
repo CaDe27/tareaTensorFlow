@@ -233,10 +233,12 @@ for n in range(14):
 	#=========== 
 		#==== les sumo uno para que el -1 sea la primera categoría
 	# asociada a la casilla 0
-	for y in y_train:
-		y += 1
-	for y in y_test:
-		y += 1
+	#print(y_train)
+	for i in range(len(y_train)):
+		y_train[i] = y_train[i] + 1
+	for i in range(len(y_test)):
+		y_test[i] = y_test[i] + 1
+	print(y_test)
 
 	#========= convertir a onehot 
 	from tensorflow.keras.utils import to_categorical

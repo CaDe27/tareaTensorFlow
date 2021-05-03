@@ -1,1 +1,1 @@
-predicción: ?
+predicción: <=50K
