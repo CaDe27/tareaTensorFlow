@@ -212,7 +212,7 @@ model.summary()
 pred1 = model.predict(x_test)
 pred = np.argmax( pred1[0])
 pred = pred - 1
-print(pred1)
+#print(pred1)
 listaDics = [0, dic_workclass, dic_education, 0, dic_marital_status, dic_occupation, dic_relationship, dic_race, dic_sex, 0, 0, 0, dic_native_country, dic_50]
 if index in  (1, 2, 4, 5, 6, 7, 8, 12, 13):
     d= listaDics[index]
