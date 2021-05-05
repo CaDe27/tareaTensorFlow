@@ -171,6 +171,7 @@ for line in readfile:
 
 arr = arr[:len(arr)-1]
 for i in arr:
+	i[0] = int(i[0])//5 - 3
 	i[1] = dic_workclass[i[1]]
 	i[3] = dic_education[i[3]]
 	i[5] = dic_marital_status[i[5]]
@@ -200,6 +201,7 @@ for line in readfile:
 arr_pruebas = arr_pruebas[0:len(arr_pruebas)-1]
 
 for i in arr_pruebas:
+	i[0] = int(i[0])//5 - 3
 	i[1] = dic_workclass[i[1]]
 	i[3] = dic_education[i[3]]
 	i[5] = dic_marital_status[i[5]]
@@ -217,7 +219,9 @@ arr_pruebas = [list(map(int,i)) for i in arr_pruebas]
 
 # atributo que se desea clasificar (0-13)
 accuracies = []
-for n in range(14):
+atributos = 14
+#for n in range(atributos):
+for n in range(atributos):
 	x_train= [e.copy() for e in arr]
 	x_test = [e.copy() for e in arr_pruebas]
 	
@@ -238,7 +242,7 @@ for n in range(14):
 		y_train[i] = y_train[i] + 1
 	for i in range(len(y_test)):
 		y_test[i] = y_test[i] + 1
-	print(y_test)
+	#print(y_test)
 
 	#========= convertir a onehot 
 	from tensorflow.keras.utils import to_categorical
@@ -246,22 +250,28 @@ for n in range(14):
 	y_test_encoded = to_categorical(y_test, num_classes = num_categorias)
 	
 	#======= normalizar datos
-	x_mean = np.mean(x_train)
-	x_std = np.std(x_train)
+	x_mean = [0]*(atributos-1)
+	x_std = [0]*(atributos-1)
+	for i in range(0, atributos-1):
+		x_mean[i] = np.mean([x[i] for x in x_train])
+		x_std[i] = np.std([x[i] for x in x_train])
 	epsilon = 1e-10
-
-	x_train_norm = (x_train - x_mean)/(x_std + epsilon)
-	x_test_norm = (x_test - x_mean)/(x_std + epsilon)
-
-
+	
+	x_train_norm = [0]*len(x_train)
+	x_test_norm = [0]*len(x_test)
+	for i in range(len(x_train)):
+		x_train_norm[i] = np.array([(x_train[i][j] - x_mean[j])/(x_std[j] + epsilon) for j in range(atributos-1)])
+	for i in range(len(x_test)):
+        	x_test_norm[i] = np.array([(x_test[i][j] - x_mean[j])/(x_std[j] + epsilon) for j in range(atributos-1)])
+	x_train_norm = np.array(x_train_norm)
+	x_test_norm = np.array(x_test_norm)
 	#crear el modelo
 	#all layers will be dense
 	from tensorflow.keras.models import Sequential
 	from tensorflow.keras.layers import Dense
 
 	model = Sequential([
-    Dense(128, activation = 'relu', input_shape=(len(x_train_norm[0]),)),
-    Dense(200, activation = 'relu'),
+    Dense(50, activation = 'relu', input_shape=(len(x_train_norm[0]),)),
     Dense(num_categorias, activation = 'softmax')
 	])
 
@@ -271,10 +281,11 @@ for n in range(14):
 	loss = 'categorical_crossentropy',
     	metrics=['accuracy']
 	)
-	model.summary()
-
+	#model.summary()
+	
 	#entrenarlo
 	#epochs is the number of times each train example is going to be iterated
+	
 	model.fit(x_train_norm, y_train_encoded,epochs = 3)
 
 	#evaluarlo
@@ -282,7 +293,7 @@ for n in range(14):
 	print('Test set accuracy:', accuracy*100)
 	accuracies.append(accuracy*100)
 
-	model_path = "modelos/modelo{}".format(n)
+	model_path = "modelos3/modelo{}".format(n)
 	model.save(model_path)
 
 	meanStdFile = open(model_path+"/mean_std.txt", "w")
@@ -293,7 +304,10 @@ for n in range(14):
 	accFile = open(model_path+"/accuracy.txt", "w")
 	accFile.write(str(accuracy))
 	accFile.close()
-generalAccuracy = open("modelos/accuracies.txt", "w")
-for i in accuracies:
-	generalAccuracy.write(str(i)+"\n")
+atributos= ['edad', 'tipo de trabajo', 'nivel de educación', 'grado de educación','estatus marital', 
+'ocupación', 'situación sentimental', 'raza', 'sexo', 'ganancias de capital','pérdidas de capital', 
+'horas de trabajo semanal', 'país de origen', 'sueldo']
+generalAccuracy = open("modelos2/accuracies.txt", "w")
+for i in range(len(accuracies)):
+	generalAccuracy.write(atributos[i]+":\t\t\t"+accuracies[i]+"\n")
 generalAccuracy.close()

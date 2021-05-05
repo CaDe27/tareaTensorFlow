@@ -1,0 +1,14 @@
+edad:			22.750444710254
+tipo de trabajo:	72.630673646926
+nivel de educación:	67.201030254364
+grado de educación:	69.399911165237
+estatus marital:	76.635342836
+ocupación:		33.603587746620
+situación sentimental:	76.825749874114
+raza:			85.565996170043
+sexo:			77.962040901184
+ganancias de capital:	91.873961687088
+pérdidas de capital:	95.313555002212
+horas trabajo semanal:	46.612617373466
+país de origen:		90.209448337554
+sueldo:			84.374421834945
