@@ -177,22 +177,45 @@ for i in arr:
 arr = [list(map(int,i)) for i in arr]
 atributos = 14
 import pandas as pd
-import matplotlib.pyplot as plt
-
 cols = ['edad', 'tipo de trabajo', 'nivel de educación', 'grado de educación','estatus marital', 
 'ocupación', 'situación sentimental', 'raza', 'sexo', 'ganancias de capital','pérdidas de capital', 
 'horas de trabajo semanal', 'país de origen', 'sueldo']
 df = pd.DataFrame(arr, columns=cols)
 
+
+vars = [0]*atributos
+for j in range(atributos):
+    vars[j] = [i[j] for i in arr]
+    vars[j] = np.array(vars[j])
+vars = np.array(vars)
+
+means = np.zeros(atributos)
+stds = np.zeros(atributos)
+for i in range(atributos):
+    means[i] = np.mean(vars[i])
+    stds[i] = np.std(vars[i])
+epsilon = 1e-10
+
+fileEst = open('generalStats.txt', 'w')
+for i in range(atributos):
+    fileEst.write(str(cols[i])+"\tmedia:"+str(means[i])+"\tstd:"+str(stds[i])+"\n")
+fileEst.close()
+
+
+import matplotlib.pyplot as plt
+
 corr_matrix = df.corr()
 fig_cor, axes_cor = plt.subplots(1,1)
+fig_cor.set_size_inches(6, 6)
 
 myimage = axes_cor.imshow(corr_matrix)
 
+labels = cols
+
 plt.colorbar(myimage)
 
-axes_cor.set_xticks(np.arange(0,corr_matrix.shape[0], corr_matrix.shape[0]*1.0/len(cols)))
-axes_cor.set_yticks(np.arange(0,corr_matrix.shape[1], corr_matrix.shape[1]*1.0/len(cols)))
+axes_cor.set_xticks(np.arange(0,corr_matrix.shape[0], corr_matrix.shape[0]*1.0/len(labels)))
+axes_cor.set_yticks(np.arange(0,corr_matrix.shape[1], corr_matrix.shape[1]*1.0/len(labels)))
 
 axes_cor.set_xticklabels([x[0:2] for x in cols])
 axes_cor.set_yticklabels(cols)
